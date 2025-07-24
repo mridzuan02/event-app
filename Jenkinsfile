@@ -10,13 +10,7 @@ pipeline {
     }
 
     stages {
-        stage('Clean & Build JAR') {
-            agent {
-                docker {
-                    image 'maven:3.9.6-eclipse-temurin-17'
-                    args '-v $HOME/.m2:/root/.m2'
-                }
-            }
+        stage('Clean & Build JAR on Host') {
             steps {
                 sh 'mvn clean package -DskipTests'
             }
