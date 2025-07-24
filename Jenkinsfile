@@ -1,60 +1,41 @@
 pipeline {
-    agent any
-
+    agent {
+	docker {
+            image 'docker:24.0.2-dind'
+            args '-u root --privileged -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+	}
     environment {
-        IMAGE_NAME = 'eventapp'
-        CONTAINER_NAME = 'eventapp-container'
-        MONGO_CONTAINER = 'mongo-container'
-        MONGO_PORT = '27017'
-        APP_PORT = '8080'
+        IMAGE_NAME = "eventapp"
+        CONTAINER_NAME = "eventapp-container"
     }
 
     stages {
-        stage('Clean & Build JAR on Host') {
+        stage('Build JAR') {
             steps {
-				sh'''
-				apk add --no-cache openjdk17 maven
-                mvn clean package -DskipTest
-				'''
+                sh '''
+                apk add --no-cache openjdk17 maven
+                mvn clean package -DskipTests
+                '''
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME .'
+                sh "docker build -t $IMAGE_NAME ."
             }
         }
 
-        stage('Start MongoDB Container') {
+        stage('Stop Old Container') {
             steps {
-                sh '''
-                    docker rm -f $MONGO_CONTAINER || true
-                    docker run -d --name $MONGO_CONTAINER -p $MONGO_PORT:27017 mongo:6.0
-                '''
+                sh "docker rm -f $CONTAINER_NAME || true"
             }
         }
 
-        stage('Start EventApp Container') {
+        stage('Run New Container') {
             steps {
-                sh '''
-                    docker rm -f $CONTAINER_NAME || true
-                    docker run -d \
-                        --name $CONTAINER_NAME \
-                        --link $MONGO_CONTAINER:mongo \
-                        -p $APP_PORT:8080 \
-                        -e SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/eventdb \
-                        $IMAGE_NAME
-                '''
+                sh "docker run -d -p 8080:8900 --name $CONTAINER_NAME $IMAGE_NAME"
             }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline execution finished.'
-        }
-        failure {
-            echo 'Pipeline failed!'
         }
     }
 }
