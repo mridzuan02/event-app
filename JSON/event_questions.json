@@ -1,0 +1,18 @@
+{
+  "eventName": "Wedding",
+  "questions": [
+    {
+      "questionText": "Do you have any dietary preferences?",
+      "fieldType": "radio",
+      "options": ["Vegetarian", "Non-Vegetarian"]
+    },
+    {
+      "questionText": "Do you require a plus one?",
+      "fieldType": "checkbox"
+    },
+    {
+      "questionText": "What is your seating preference?",
+      "fieldType": "text"
+    }
+  ]
+}

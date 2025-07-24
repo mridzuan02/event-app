@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Form</title>
+    <link rel="stylesheet" th:href="@{/styles/styles.css}" />
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+</head>
+<body>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <div class="logo">EventSys</div>
+    <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="#">About</a></li>
+        <li><a href="#">Events</a></li>
+        <li><a href="#">Contact</a></li>
+    </ul>
+</nav>
+
+<div class="login-container">
+    <!-- Left Description Panel -->
+    <div class="center-panel">
+        <h1>Welcome to the Ultimate Event Registration System!</h1>
+        <p>
+            Discover and register for exclusive events that bring people together. Whether you're into music concerts, tech workshops, community festivals, or networking meetups —
+            our platform gives you instant access to a world of unforgettable experiences.
+            Log in to secure your spot, personalize your preferences, and manage your bookings with ease.
+        </p>
+    </div>
+
+    <!-- Right Login Form -->
+    <div class="wrapper">
+        <form th:action="@{/login}" method="post">
+            <h1>Login</h1>
+
+            <div class="input-box">
+                <input type="text" placeholder="Username" name="username" required />
+                <i class='bx bxs-user'></i>
+            </div>
+
+            <div class="input-box">
+                <input type="password" placeholder="Password" name="password" required />
+                <i class='bx bxs-lock-alt'></i>
+            </div>
+
+            <div class="remember-forgot">
+                <label><input type="checkbox" name="remember-me" /> Remember me</label>
+                <a href="#">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn">Login</button>
+
+            <div class="register-link">
+                <p>Don't have an account? <a href="#">Register</a></p>
+            </div>
+        </form>
+        <p th:if="${param.error}" style="color:red">Invalid username or password.</p>
+        <p th:if="${param.logout}" style="color:green">You have been logged out.</p>
+    </div>
+</div>
+
+</body>
+</html>

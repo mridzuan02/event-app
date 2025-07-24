@@ -1,0 +1,29 @@
+<!-- templates/views/Event/thank-you.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Thank You</title>
+    <link rel="stylesheet" th:href="@{/styles/styles.css}" />
+</head>
+<body class="bg-image">
+
+<nav class="navbar">
+    <div class="logo">EventSys</div>
+    <ul class="nav-links">
+        <li><a href="/events">Events</a></li>
+        <li><a href="#">Contact</a></li>
+        <li><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+
+<div class="thank-you-container">
+    <div class="thank-you-card">
+        <h1>🎉 Thank You!</h1>
+        <p>Your response has been successfully recorded.</p>
+        <a href="/events" class="btn btn-outline-light mt-3">Back to Events</a>
+    </div>
+</div>
+
+
+</body>
+</html>
