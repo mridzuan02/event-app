@@ -4,10 +4,12 @@ pipeline {
     environment {
         IMAGE_NAME = 'eventapp'
         CONTAINER_NAME = 'eventapp-container'
+        MONGO_CONTAINER = 'mongo-container'
+        MONGO_PORT = '27017'
+        APP_PORT = '8080'
     }
 
     stages {
-
         stage('Clean & Build JAR') {
             agent {
                 docker {
@@ -26,12 +28,25 @@ pipeline {
             }
         }
 
-        stage('Run App & MongoDB using Docker Compose') {
+        stage('Start MongoDB Container') {
             steps {
-                // Remove any existing containers
                 sh '''
-                    docker-compose down || true
-                    docker-compose up -d
+                    docker rm -f $MONGO_CONTAINER || true
+                    docker run -d --name $MONGO_CONTAINER -p $MONGO_PORT:27017 mongo:6.0
+                '''
+            }
+        }
+
+        stage('Start EventApp Container') {
+            steps {
+                sh '''
+                    docker rm -f $CONTAINER_NAME || true
+                    docker run -d \
+                        --name $CONTAINER_NAME \
+                        --link $MONGO_CONTAINER:mongo \
+                        -p $APP_PORT:8080 \
+                        -e SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/eventdb \
+                        $IMAGE_NAME
                 '''
             }
         }
@@ -39,10 +54,10 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline completed.'
+            echo 'Pipeline execution finished.'
         }
         failure {
-            echo 'Pipeline failed.'
+            echo 'Pipeline failed!'
         }
     }
 }
