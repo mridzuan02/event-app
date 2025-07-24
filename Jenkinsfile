@@ -12,7 +12,10 @@ pipeline {
     stages {
         stage('Clean & Build JAR on Host') {
             steps {
-                sh 'mvn clean package -DskipTests'
+				sh'''
+				apk add --no-cache openjdk17 maven
+                mvn clean package -DskipTest
+				'''
             }
         }
 
